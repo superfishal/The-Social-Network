@@ -9,10 +9,14 @@ const UserSchema = new Schema(
     },
     email: {
       type: String,
+      lowercase: true,
       required: true,
       unique: true,
       trim: true,
-      //   need mongoose validator to check for valid email address.
+      match: [
+        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+        "Please fill a valid email address",
+      ],
     },
     // array of _id values referencing the Thought model.
     thoughts: [
@@ -38,9 +42,9 @@ const UserSchema = new Schema(
     id: false,
   }
 );
-// get total count of friends and replies on retrieval
+// get total count of friends on retrieval
 UserSchema.virtual("friendCount").get(function () {
-  return this.friends.reduce((total, friend) => total + friend.length + 1, 0);
+  return this.friends.length;
 });
 
 const User = model("User", UserSchema);
