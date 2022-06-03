@@ -1,18 +1,18 @@
 const router = require("express").Router();
-const {
-  getAllThoughts,
-  getThought,
-  addThought,
-  removeThought,
-} = require("../../controllers/thought-controller");
-// POST callback
-router.route("/:userId").post(addThought);
-// DELETE callback for removing thought
-router.route("/:userId/:thoughtId").delete(removeThought);
+// const {
+//   getAllThoughts,
+//   getThought,
+//   addThought,
+//   removeThought,
+// } = require("../../controllers/thought-controller");
+// // POST callback
+// router.route("/:userId").post(addThought);
+// // DELETE callback for removing thought
+// router.route("/:userId/:thoughtId").delete(removeThought);
 // PUT callback to make reply
-router.route("/:pizzaId/:commentId").put(addReply).delete(removeComment);
-// DELETE callback for removing reply
-router.route("/:pizzaId/:commentId/:replyId").delete(removeReply);
+// router.route("/:pizzaId/:commentId").put(addReply).delete(removeComment);
+// // DELETE callback for removing reply
+// router.route("/:pizzaId/:commentId/:replyId").delete(removeReply);
 module.exports = router;
 
 // /api/thoughts

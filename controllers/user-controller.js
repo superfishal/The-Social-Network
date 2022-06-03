@@ -3,6 +3,7 @@ const userController = {
   // get all users
   getAllUsers(req, res) {
     User.find({})
+      .select("-__v")
       .then((dbUserData) => res.json(dbUserData))
       .catch((err) => {
         console.log(err);
@@ -31,7 +32,7 @@ const userController = {
       })
       .catch((err) => {
         console.log(err);
-        res.sendStatus(400);
+        res.status(500).json(err);
       });
   },
   //   add new user
@@ -41,10 +42,14 @@ const userController = {
       .catch((err) => res.json(err));
   },
   updateUser({ params, body }, res) {
-    User.findOneAndUpdate({ _id: params.id }, body, {
-      new: true,
-      runValidators: true,
-    })
+    User.findOneAndUpdate(
+      { _id: params.id },
+      { $set: body },
+      {
+        new: true,
+        runValidators: true,
+      }
+    )
       .then((dbUserData) => {
         if (!dbUserData) {
           res.status(404).json({ message: "No User found with this id!" });
@@ -52,7 +57,7 @@ const userController = {
         }
         res.json(dbUserData);
       })
-      .catch((err) => res.json(err));
+      .catch((err) => res.status(500).json(err));
   },
   // delete user
   deleteUser({ params }, res) {
@@ -63,7 +68,9 @@ const userController = {
           return;
         }
         //   removes users associated thoughts when deleted
-        return Thought.deleteMany({ _id: { $in: dbUserData.thoughts } });
+        if (dbUserData.thoughts.length > 0) {
+          return Thought.deleteMany({ _id: { $in: dbUserData.thoughts } });
+        } else return;
       })
       .then(() =>
         res.json({ message: "User and associated thoughts deleted." })
